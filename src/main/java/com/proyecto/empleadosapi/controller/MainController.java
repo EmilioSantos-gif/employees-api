@@ -3,6 +3,7 @@ package com.proyecto.empleadosapi.controller;
 import com.proyecto.empleadosapi.model.Employee;
 import com.proyecto.empleadosapi.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import com.proyecto.empleadosapi.repository.UserRepository;
 import com.proyecto.empleadosapi.model.User;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller // This means that this class is a Controller
@@ -87,5 +90,14 @@ public class MainController {
     @GetMapping("/alive")
     public @ResponseBody Boolean isAlive() {
         return true;
+    }
+
+    @GetMapping("/latest")
+    public @ResponseBody ResponseEntity<Employee> getLatestEmployee() {
+        Employee employee = employeeRepository.findTopByOrderByIdDesc();
+        if (Objects.nonNull(employee)){
+            return ResponseEntity.ok(employee);
+        }
+        return ResponseEntity.internalServerError().build();
     }
 }
